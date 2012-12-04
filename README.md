@@ -9,24 +9,24 @@ In order to use the Modulator, you must first indicate whether you'd like to loa
 
 
 a) Create a work area - From a url
-
+----------------------------------------
 If you select this option, you will be asked to provide a url to the file containing modules. This is an html file that has been marked up in a specific way. See "c) How to mark up an HTML file for module use" below.
 
 Once you've submitted a url to load into the Desktop, the Desktop will load the content of the file. If no <module> tags are found in the requested file, the Modulator will assume that you want to treat the entire file as a module. It will create a folder in the File Cabinet and load the entire contents into the Desktop with a predefined work area with a white background and a width of 600px. In general, this is less ideal than simply creating your own work area and dragging and dropping html files into the Inbox (see "b) Create a work area - Create your own").
 
 If the Modulator does find <module> tags in your requested URL, each module will be added to the File Cabinet AND to the Desktop. You can then rearrange, edit, and delete modules from the Desktop as you wish. You can also edit other text, things like headers and footers, which are not modules and thus can not be rearranged. You can also proceed to drag and drop individual module files into the Inbox, as described in section "b) Create a work area - Create your own."
-----------------------------------------
-b) Create a work area - Create your own
 
+b) Create a work area - Create your own
+----------------------------------------
 If you choose to create your own work area within the Desktop, you will be asked to specify a width for the table that will contain your main modules, as well as a background color. Then you will be ready to add new modules to the desktop.
 
 1) Drag any html files into the Inbox section of the screen.
 2) The File Cabinet below should now be populated with Modules. These can be rearranged at will.
 
 3) Files can then be dragged onto the Desktop to be edited. You can drag and drop as many Modules as you'd like onto the desktop, and the same Module can be dropped onto the desktop multiple times.
-----------------------------------------
-c) Editing modules on the desktop:
 
+c) Editing modules on the desktop:
+----------------------------------------
 Modules on the desktop can be:
 
 -Rearranged
@@ -46,9 +46,9 @@ To remove a module, click the X at the top right of the label that appears when 
 -Exported as HTML
 
 To export the contents of your desktop, click the "View code" tab at the top right. This will populate a textarea with the value of the HTML as it displays on the "Edit HTML" tab.
-----------------------------------------
-d) How to mark up an HTML file for module use
 
+d) How to mark up an HTML file for module use
+----------------------------------------
 Any part of code that you'd like to be sortable should be surrounded by a <module> tag in the following format:
 <module name="Module name" class="main" >
 <!-- content of the module here -->
