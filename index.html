@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Modulator</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.1.min.js"></script>
+        
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+		<header>
+		
+		</header>
+		<div id="app">
+			<div id="messages">
+			<div id="info" class="message ui-state-highlight" ></div>
+			<div id="error" class="message ui-state-error" ></div>
+			</div>
+			<div id="office">
+				<div id="fileManager">
+					<div id="fileCabinet">
+					<div id="fileDrawer" class="connectedSortable">
+					
+					</div>
+					<div class="fileDrawerFace">
+					</div>
+					</div>
+				</div>
+				<div id="deskTop">
+					<div class="namePlate">
+						<div id="view_source" class="top_button">View code</div>
+						<div id="view_html" class="top_button">Edit HTML</div>
+						<p>Your desktop:</p>					
+					</div>
+					<div id="deskForm">
+						<h1>Create a work area</h1>
+						<input type="radio" name="deskTopCreate" value="url" id="loadURL"> <label for="loadURL">From a url</label>
+						--or--
+						<input type="radio" name="deskTopCreate" value="new" id="create"> <label for="create">Create your own</label>
+						<div id="url" class="formOptions">
+						<input type="text" name="url" value="" id="addURL"/>
+						</div>
+						<div id="new" class="formOptions">
+						<label for="width">Width: </label>
+						<input type="text" name="width" id="width" value="600" size="4" /> px<br />
+						<label for="bgcolor">Background color: </label>
+						#<input type="text" name="bgcolor" id="bgcolor" value="FFFFFF" size="6" />
+						</div>
+						<button>Create</button>
+					</div>
+					<div id="fullWorkArea"></div>
+					<textarea id="source"></textarea>
+				</div>
+			</div>
+		</div>
+		<div id="attrChangeHoverForm">
+			<!-- NEW MARKUP FOR ARROWS -->
+			<div class="arrowContainer">
+				<div class="arrow-left-shadow"></div>
+				<div class="arrow-left">&#9668;</div>
+			</div>
+			<!-- NEW MARKUP FOR ARROWS -->
+			
+			<!-- NEW MARKUP FOR IMAGE VERIFY -->
+			<div id="loader"><span>Verifying Image </span></div>
+			<!-- NEW MARKUP FOR IMAGE VERIFY -->
+			
+			Change Attributes: <a href="javascript:;" class="close"> </a>
+		</div>
+		
+		<footer>
+		
+		</footer>
+
+        <script src="js/vendor/jquery-1.8.0.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
