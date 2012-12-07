@@ -110,18 +110,12 @@ if (!(window.console && console.log)) {
 			var wrap_span =  $(document.createElement("span")).addClass('editable').attr('contenteditable',true);
 				
 			// make all text nodes editable by wrapping them in spans with a contenteditable attribute set to true
-			/* NOTE: The following reference to parent is required. It ends up double-wrapping the text in editable spans 
-					 until you've edited the text. This is to overcome a bug in both Firefox and Chrome, where if you select
-					 all and delete from editable text span, the editable text span itself is also selected and deleted. 
-					 Both browsers recreate the span if you add text again, but they do not re-add the mousedown event.
-			*/
+
 			node.find('[class!="label"]').contents().filter(function () { 
 				var whitespace = /^\s*$/;
 				loops++;
 				return (this.nodeType === 3 && !whitespace.test(this.nodeValue));
-			}).parent().bind('mousedown.ui-disableSelection selectstart.ui-disableSelection', function(e) {
-				  e.stopImmediatePropagation();
-			}).wrapInner(wrap_span);
+			}).wrap(wrap_span);
 			
 			// disable all links
 			$('a',node).each(function() {
@@ -333,6 +327,7 @@ if (!(window.console && console.log)) {
 			});
 			
 			$( "#workArea" ).sortable({ 
+				handle: '.label',
 				item: '.deskFolder',
 				placeholder: 'placeholder',
 				tolerance:'pointer',
@@ -537,7 +532,6 @@ if (!(window.console && console.log)) {
 		attachForm : function(){
 			var $this = $(this);
 			$this.bind('mousedown.ui-disableSelection selectstart.ui-disableSelection', function(e) {
-				  e.stopImmediatePropagation();
 				  data.currentObj = $this;
 				  $.fn.attrChangeHoverForm("showForm",$this);
 			});
