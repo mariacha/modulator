@@ -194,7 +194,7 @@ if (!(window.console && console.log)) {
 						if(modules.length){
 							privateMethods.prepareEditableContent($returnData);
 							$("#fullWorkArea").append($returnData);
-							modules.first().parent().wrapInner("<div id='workArea' class='connectedSortable' />");
+							modules.first().parent().wrapInner("<div id='workArea' />");
 							modules.each(function(){
 								var mod_name = $(this).attr("name");
 								if(mod_name){
@@ -326,9 +326,7 @@ if (!(window.console && console.log)) {
 				}
 			});
 			
-			$( "#workArea" ).sortable({ 
-				handle: '.label',
-				item: '.deskFolder',
+			$( "#workMenu" ).sortable({ 
 				placeholder: 'placeholder',
 				tolerance:'pointer',
 				start: function(e, ui){
@@ -340,7 +338,8 @@ if (!(window.console && console.log)) {
 					var current_file = $(ui.item).text();
 					var new_file = methods.receiveFile(current_file);
 					privateMethods.prepareEditableContent(new_file);
-					$(ui.item).before(new_file);
+					$("#workArea").append(new_file);
+					$(ui.item).before($(ui.item).clone());
 				},
 				stop : function() {
 					 $(".deskFolder").removeClass('preview');
