@@ -159,6 +159,28 @@ textarea {
 	background: #fff;
 	color: #ccc;
 }
+#deskTop #workMenu {
+	width: 85px;
+	float: right;
+	min-height:600px;
+	background: #555;
+}
+#workMenu .fileFolder, 
+#workMenu .placeholder
+{
+	background: #222;
+	color: #fff;
+	border: 1px solid #fff;
+}
+#workMenu .placeholder {
+	background: #999;
+	height: 22px;
+	width: 85px;
+	border: 1px dashed #fff;
+}
+#deskTop #fullWorkArea {
+	margin-right: 85px;
+}
 #deskTop textarea {
 	width: 680px;
 	height: 500px;
@@ -208,11 +230,8 @@ textarea {
 .deskFolder:before, .deskFolder:after { content:"."; display:table; height: 0; font-size:0; line-height:0; visibility:hidden; } 
 
 .deskFolder { *zoom:1; position:relative;}
-.preview {height:100px; border:8px solid #ccc; overflow:hidden;}
-#workArea .placeholder {height:100px; background:#ccc; border:8px solid red; opacity:.5;}
 
 .deskFolder .label {display:none; position:absolute; right:0; background:#333; color:#fff; padding:5px; }
-.preview .label {display:block;}
 .deskFolder .left{left:0; right:auto;}
 
 .deskFolder .label .move { background:url('../img/left_right.png') no-repeat left 3px; height:15px; width:20px; display: inline-block; cursor: w-resize;}

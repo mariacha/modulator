@@ -309,9 +309,9 @@ if (!(window.console && console.log)) {
 			// Make your drawer sortable
 			$( "#fileDrawer").sortable({
 				placeholder: 'placeholder',
+				tolerance:'pointer',
 				start: function(e, ui){
 				   $.fn.attrChangeHoverForm("hideForm",data.currentObj);
-				   $(".deskFolder").addClass('preview');
 				},
 				connectWith : ".connectedSortable",
 				remove : function(e, ui) {
@@ -322,7 +322,6 @@ if (!(window.console && console.log)) {
 						$( "#fileDrawer").sortable("cancel");
 						$(ui.item).removeClass('tmp');
 					}
-					$(".deskFolder").removeClass('preview');
 				}
 			});
 			
@@ -331,18 +330,28 @@ if (!(window.console && console.log)) {
 				tolerance:'pointer',
 				start: function(e, ui){
 				   $.fn.attrChangeHoverForm("hideForm",data.currentObj);
-				   $(".deskFolder").addClass('preview');
 				   $( this ).sortable( 'refreshPositions' );
 				},
 				receive: function(e, ui){
 					var current_file = $(ui.item).text();
 					var new_file = methods.receiveFile(current_file);
+					var dropped_label = $(ui.item).clone();
+					 // Create a label for the file
+				   // Create close box for the file
+				   var deskFolderClose = $( document.createElement("div") ).addClass("close");
+				   deskFolderClose.click(
+					 function(event) {
+					   $(this).parents('.fileFolder').remove();
+					   // also remove the file that is refered to here.
+					   }
+				   );
+				   // Create box to move the label out of the way
+				   
+				   dropped_label.append(deskFolderClose);
+				   
 					privateMethods.prepareEditableContent(new_file);
 					$("#workArea").append(new_file);
-					$(ui.item).before($(ui.item).clone());
-				},
-				stop : function() {
-					 $(".deskFolder").removeClass('preview');
+					$(ui.item).before(dropped_label);
 				}
 			});
 										
@@ -356,37 +365,6 @@ if (!(window.console && console.log)) {
 		receiveFile : function(current_file) {
 		   // the content of the file that was uploaded
 		   var deskFolderDiv = $( document.createElement("div") ).addClass("deskFolder").append(data.domStrings[current_file].clone());
-		   
-		   // Create a label for the file
-		   var deskFolderLabel = $( document.createElement("div") ).addClass("label").html(current_file);
-		   // Create close box for the file
-		   var deskFolderClose = $( document.createElement("div") ).addClass("close");
-		   deskFolderClose.click(
-			 function(event) {
-			   event.stopPropagation();
-			   $(this).parents('.deskFolder').remove();
-			   }
-		   );
-		   // Create box to move the label out of the way
-		   var deskFolderLabelMove = $( document.createElement("div") ).addClass("move");
-		   deskFolderLabelMove.click(function(){
-			   $(this).parent('.label').toggleClass('left');
-		   });
-		   
-		   deskFolderLabel.append(deskFolderClose).prepend(deskFolderLabelMove);
-		   deskFolderDiv.prepend(deskFolderLabel);
-		   
-		   // add the hover effect to the label
-		   deskFolderDiv.hover(
-			 function () {
-			   $(this).find(".label").show();
-			   $(this).addClass('hovered');
-			 }, 
-			 function () {
-			   $(this).find(".label").hide();
-			   $(this).removeClass('hovered');
-			 }
-		   );
 		   
 		   return deskFolderDiv;
 
