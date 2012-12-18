@@ -19,8 +19,8 @@ if (!(window.console && console.log)) {
 	var data = {
 		domStrings : {},
 		urlPath : '',
-		htmlName : ''
-		
+		htmlName : '',
+		dropped : 1 // a counter for how many items have been dropped into the workMenu
 	};
 	
 	//private methods
@@ -83,17 +83,19 @@ if (!(window.console && console.log)) {
 			data.domStrings[ fileLabel ] = $(contents);
 		
 			 var modules = $('module.main',$(contents));
+			 // First case: there are <module> tags in the html file
 			 for(var i=0; i<modules.length; i++){
 				 var module_name = $(modules[i]).attr('name');
 				 if(module_name && !data.domStrings[ module_name ]){
 					 data.domStrings[ module_name ] = $(modules[i]);
 					 var new_folder = $( document.createElement("div") ).append(module_name).addClass("fileFolder");
-					 $("#fileDrawer").prepend(new_folder);
+					 $("#fileDrawer").append(new_folder);
 				 }
 			 }
+			 // Second case: there are no <module> tags in the html file
 			 if(!modules.length){
 				 var new_folder = $( document.createElement("div") ).append(fileLabel).addClass("fileFolder");
-				 $("#fileDrawer").prepend(new_folder);
+				 $("#fileDrawer").append(new_folder);
 			 }
 			 
 		 },
@@ -143,6 +145,45 @@ if (!(window.console && console.log)) {
 			var path = addURL.split("/");
 			data.htmlName = path.pop();
 			data.urlPath = path.join('/');
+		},
+		/***************************** 
+			Inserts content related to one div before another div
+			parameters: origDiv - the original div with a "rel" to the id of the div to insert
+		*****************************/	
+		insertRelatedDiv : function(origDiv, parentContainer){
+			var move_div_id = $(origDiv).attr('rel');
+			var move_div = $("#"+move_div_id);
+			var append_to_div_id = $(origDiv).next().attr('rel');
+			var append_to_div = $("#"+append_to_div_id);
+			
+			if(append_to_div[0]){
+				append_to_div.before(move_div);
+			} else {
+				// Sometimes you can't find the append_to_div, because the item is going to the bottom of the list
+				parentContainer.append(move_div);
+			}
+		},
+		/***************************** 
+			Clones the contents of origDiv, adds a "close" option and links the new div to its related content in the
+			work area.
+			parameters: origDiv - The original div that is being cloned.
+		*****************************/	
+		createLabelDiv : function(origDiv, relatesTo){
+			var dropped_label = $(origDiv).clone();
+			// Create a label for the file
+			// Create close box for the file
+			var deskFolderClose = $( document.createElement("div") ).addClass("close");
+			deskFolderClose.click(
+			 function(event) {
+				var current_message = $(this).parents('.fileFolder');
+				$("#"+current_message.attr("rel")).remove();
+				current_message.remove();
+			   }
+			);
+			
+			dropped_label.append(deskFolderClose);
+			dropped_label.attr('rel',relatesTo);
+			return dropped_label;
 		}
 	};
 	
@@ -198,8 +239,10 @@ if (!(window.console && console.log)) {
 							modules.each(function(){
 								var mod_name = $(this).attr("name");
 								if(mod_name){
-									var new_file = methods.receiveFile(mod_name);
+									var new_file = methods.receiveFile(mod_name, $('#workMenu'));
+									var dropped_label = privateMethods.createLabelDiv($("<div class='fileFolder'>"+mod_name+"</div>"), new_file.attr('id'));
 									privateMethods.prepareEditableContent(new_file);
+									$("#workMenu").append(dropped_label);
 									$(this).before(new_file);
 									$(this).remove();
 								}
@@ -217,8 +260,10 @@ if (!(window.console && console.log)) {
 										    userVisible: true,
 										    type: "info"});
 							methods.createWorkArea('FFFFFF','600');
-							var new_file = methods.receiveFile(data.htmlName);
+							var new_file = methods.receiveFile(data.htmlName, $('#workMenu'));
+							var dropped_label = privateMethods.createLabelDiv($("<div class='fileFolder'>"+data.htmlName+"</div>"), new_file.attr('id'));
 							privateMethods.prepareEditableContent(new_file);
+							$("#workMenu").append(dropped_label);
 							$("#workArea").append(new_file);
 							messageHandler.displayMessages();
 						}
@@ -333,25 +378,17 @@ if (!(window.console && console.log)) {
 				   $( this ).sortable( 'refreshPositions' );
 				},
 				receive: function(e, ui){
+					var droppedContainer = $(e.target);
 					var current_file = $(ui.item).text();
-					var new_file = methods.receiveFile(current_file);
-					var dropped_label = $(ui.item).clone();
-					 // Create a label for the file
-				   // Create close box for the file
-				   var deskFolderClose = $( document.createElement("div") ).addClass("close");
-				   deskFolderClose.click(
-					 function(event) {
-					   $(this).parents('.fileFolder').remove();
-					   // also remove the file that is refered to here.
-					   }
-				   );
-				   // Create box to move the label out of the way
-				   
-				   dropped_label.append(deskFolderClose);
-				   
+					var new_file = methods.receiveFile(current_file, droppedContainer);
+					var dropped_label = privateMethods.createLabelDiv(ui.item, new_file.attr('id'));
+					$(ui.item).after(dropped_label);
 					privateMethods.prepareEditableContent(new_file);
 					$("#workArea").append(new_file);
-					$(ui.item).before(dropped_label);
+					privateMethods.insertRelatedDiv(dropped_label, $("#workArea"));
+				},
+				stop: function (e, ui){
+					privateMethods.insertRelatedDiv(ui.item, $("#workArea"));
 				}
 			});
 										
@@ -362,10 +399,32 @@ if (!(window.console && console.log)) {
 			Takes a jquery file dropped and appends it to the work area in a sortable div
 			parameters: current_file - the hash key to the domString element to manipulate.
 		*****************************/	
-		receiveFile : function(current_file) {
+		receiveFile : function(current_file, droppedContainer) {
 		   // the content of the file that was uploaded
-		   var deskFolderDiv = $( document.createElement("div") ).addClass("deskFolder").append(data.domStrings[current_file].clone());
-		   
+		   var id = "dropped"+data.dropped;
+		   data.dropped++;
+		   var deskFolderDiv = $("<div id='"+id+"' />").addClass("deskFolder").append(data.domStrings[current_file].clone());
+		   // Create box to move the label out of the way
+			deskFolderDiv.bind('mousemove', function(e){
+				$(this).addClass('hovered');
+				var current_label = $("div.fileFolder[rel='"+this.id+"']");
+				$('#workMenu .fileFolder').removeClass('current');
+				current_label.addClass('current');
+				var height_per_label = current_label.outerHeight();
+				var min_height = $( "#fullWorkArea" ).offset().top;
+				var distance_down = $('#workMenu .fileFolder').index(current_label);
+				var distance_to_lower = e.pageY - (distance_down * height_per_label) - (height_per_label/2);
+				distance_to_lower = Math.max(distance_to_lower, min_height);
+				droppedContainer.css({
+				   position: "absolute",
+				   top:   distance_to_lower,
+				   left:  droppedContainer.offset().left
+				});
+			})
+			.bind('mouseout', function(){
+				$('#workMenu .fileFolder').removeClass('current');
+				$(this).removeClass('hovered');
+			});
 		   return deskFolderDiv;
 
 		},
